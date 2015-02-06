@@ -2,6 +2,12 @@
 <html>
 <head><title>test</title></head>
 <body>
-	<h1>hello {{ var }}</h1>
+    <h1>{{ var }}</h1>
+    <ul>
+    {% for key, value in uf_list %}
+        <li>{{key}} - {{value}}</li>
+    {% endfor %}
+    </ul>
+    <p>numtotal = {{ numtotal }}</p>
 </body>
 </html>
