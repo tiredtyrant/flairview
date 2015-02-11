@@ -5,38 +5,52 @@
        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
 
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1.0', {'packages':['corechart']});
-
-      // Set a callback to run when the Google Visualization API is loaded.
+      google.load('visualization', '1.0', {'packages':['corechart']});      
+      google.load("visualization", "1", {'packages':["geochart"]});
       google.setOnLoadCallback(drawChart);
 
-      // Callback that creates and populates a data table,
-      // instantiates the pie chart, passes in the data and
-      // draws it.
       function drawChart() {
 
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'UF');
-        data.addColumn('number', 'Usuários');
-        data.addRows([
+        //PIE
+        var piedata = new google.visualization.DataTable();
+        piedata.addColumn('string', 'UF');
+        piedata.addColumn('number', 'Usuários');
+        piedata.addRows([
           {% for key, value in uf_list %}
-          ['{{key}}',{{value}}],
+          ['{{siglas_estados[key]}}',{{value}}],
           {% endfor %}
         ]);
-
-        // Set chart options
-        var options = {'title':'Usuários do /r/brasil',
+        var pieoptions = {'title':'Usuários do /r/brasil',
                        'width':600,
                        'height':600};
-
-        // Instantiate and draw our chart, passing in some options.
-        //var barchart = new google.visualization.BarChart(document.getElementById('chart_div'));
-        //barchart.draw(data, options);
+                       
+        //MAP
+        var mapdata = new google.visualization.arrayToDataTable([
+            ['Estado','Usuários'],
+            {% for key, value in uf_list %}
+                {% if key != 'world' %}
+                ['{{siglas_estados[key]}}',{{value}}],
+                {% endif %}
+            {% endfor %}
+        ]);
+        var mapoptions = {
+        region: 'BR',
+        displayMode: 'regions',
+        resolution: 'provinces',
+        width: 640,
+        height: 480
+        };
         
         var piechart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        piechart.draw(data, options);
+        piechart.draw(piedata, pieoptions);
+        
+        var geochart = new google.visualization.GeoChart(document.getElementById('visualization'));
+        function handler(eventData){
+            if(eventData.region.indexOf('BR-') > -1)
+                window.open(eventData.region.replace('BR-',''),'_self');
+        }
+        google.visualization.events.addListener(geochart,'regionClick',handler);
+        geochart.draw(mapdata,mapoptions);
       }
     </script>
 </head>
@@ -52,5 +66,6 @@
     </table>
     <p>Total de usuários com flair: {{ numtotal }}</p>
     <div id="chart_div"></div>
+    <div id="visualization"></div>
 </body>
 </html>

@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from flask import Flask
 from flask import render_template
 from flask import g
@@ -6,6 +8,7 @@ import operator
 
 DATABASE = 'flairs.db'
 
+siglas_estados = {'AC':u'Acre', 'AL':u'Alagoas', 'AM':u'Amazonas', 'AP':u'Amapá','BA':u'Bahia','CE':u'Ceará','DF':u'Distrito Federal','ES':u'Espírito Santo','GO':u'Goiás','MA':u'Maranhão','MT':u'Mato Grosso','MS':u'Mato Grosso do Sul','MG':u'Minas Gerais','PA':u'Pará','PB':u'Paraíba','PR':u'Paraná','PE':u'Pernambuco','PI':u'Piauí','RJ':u'Rio de Janeiro','RN':u'Rio Grande do Norte','RO':u'Rondônia','RS':u'Rio Grande do Sul','RR':u'Roraima','SC':u'Santa Catarina','SE':u'Sergipe','SP':u'São Paulo','TO':u'Tocantins','world':u'País Estrangeiro'}
 app = Flask(__name__)
 
 def connect_db():
@@ -45,7 +48,7 @@ def mainpage():
         uflist[uf[0]] = g.db.execute('select count(*) from flairs where uf == ?',[uf[0]]).fetchone()[0]
     def getKey(item):
         return item[1]
-    return render_template('main.html', var='flair list', uf_list = sorted(uflist.items(),key=getKey,reverse=True), numtotal=numtotal)
+    return render_template('main.html', siglas_estados=siglas_estados, uf_list = sorted(uflist.items(),key=getKey,reverse=True), numtotal=numtotal)
     
 if __name__ == '__main__':
     app.run(debug=True)
