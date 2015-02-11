@@ -19,6 +19,17 @@ def before_request():
 def teardown_request(exception):
     if hasattr(g,'db'):
         g.db.close()
+		
+@app.route('/<uf>')
+def showuf(uf):
+    userlist = []
+    
+    users = g.db.execute('select username, cidade from flairs where uf == ?',[uf])
+    for user in users:
+        userlist.append((user[0],user[1]))
+    def getKey(item):
+        return item[1]
+    return render_template('showuf.html',userlist=sorted(userlist,key=getKey),uf=uf)
 
 @app.route('/')
 def mainpage():
@@ -34,7 +45,7 @@ def mainpage():
         uflist[uf[0]] = g.db.execute('select count(*) from flairs where uf == ?',[uf[0]]).fetchone()[0]
     def getKey(item):
         return item[1]
-    return render_template('test.html', var='flair list', uf_list = sorted(uflist.items(),key=getKey,reverse=True), numtotal=numtotal)
+    return render_template('main.html', var='flair list', uf_list = sorted(uflist.items(),key=getKey,reverse=True), numtotal=numtotal)
     
 if __name__ == '__main__':
     app.run(debug=True)

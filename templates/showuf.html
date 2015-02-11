@@ -1,0 +1,17 @@
+<html>
+<head><title>{{ uf }}</title></head>
+<body>
+    <br/>
+    <br/>
+    <table>
+        {% for user in userlist %}
+            <tr>
+            <td><a href="https://www.reddit.com/u/{{ user[0] }}">{{ user[0] }}</a></td>
+            <td>{{ user[1] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br/>
+    <br/>
+</body>
+</html>
