@@ -2,27 +2,27 @@
 <html>
 <head>
     <title>Flairs do /r/brasil</title>
-       <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}" media="screen" />
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
-
-      google.load('visualization', '1.0', {'packages':['corechart']});      
-      google.load("visualization", "1", {'packages':["geochart"]});
+      google.load('visualization', '1.0', {'packages':['corechart','geochart']});
       google.setOnLoadCallback(drawChart);
 
       function drawChart() {
-
         //PIE
         var piedata = new google.visualization.DataTable();
         piedata.addColumn('string', 'UF');
         piedata.addColumn('number', 'Usuários');
         piedata.addRows([
-          {% for key, value in uf_list %}
-          ['{{siglas_estados[key]}}',{{value}}],
-          {% endfor %}
+            {% for key, value in uf_list %}
+            ['{{siglas_estados[key]}}',{{value}}],
+            {% endfor %}
         ]);
-        var pieoptions = {'title':'Usuários do /r/brasil',
-                       'width':600,
-                       'height':600};
+        var pieoptions = {
+            'title':'Usuários do /r/brasil',
+            'width':600,
+            'height':600
+        };
                        
         //MAP
         var mapdata = new google.visualization.arrayToDataTable([
@@ -34,17 +34,20 @@
             {% endfor %}
         ]);
         var mapoptions = {
-        region: 'BR',
-        displayMode: 'regions',
-        resolution: 'provinces',
-        width: 640,
-        height: 480
+            region: 'BR',
+            displayMode: 'regions',
+            resolution: 'provinces',
+            width: 640,
+            height: 480,
+            backgroundColor: '#ffffff',
+            datalessRegionColor: '#ffffff',
+            colorAxis: {colors: ['#e0f3db', '#a8ddb5', '#43a2ca']}
         };
         
         var piechart = new google.visualization.PieChart(document.getElementById('chart_div'));
         piechart.draw(piedata, pieoptions);
         
-        var geochart = new google.visualization.GeoChart(document.getElementById('visualization'));
+        var geochart = new google.visualization.GeoChart(document.getElementById('geochart_div'));
         function handler(eventData){
             if(eventData.region.indexOf('BR-') > -1)
                 window.open(eventData.region.replace('BR-',''),'_self');
@@ -56,16 +59,22 @@
 </head>
 <body>
     <h1>Localização dos usuários do /r/brasil</h1>
-    <table>
-    {% for key, value in uf_list %}
-        <tr>
-        <td><a href="/{{key}}">{{ key }}</a></td>
-        <td>{{value}}</td>
-        </td>
-    {% endfor %}
-    </table>
-    <p>Total de usuários com flair: {{ numtotal }}</p>
     <div id="chart_div"></div>
-    <div id="visualization"></div>
+    <div id="geochart_div"></div>
+    <p>Total de usuários com flair: {{ numtotal }}</p>
+    <div>
+        <table>
+            <tr>
+                <th>Estado</th>
+                <th>Usuários</th>
+            </tr>
+        {% for key, value in uf_list %}
+            <tr>
+            <td><a href="/{{key}}">{{siglas_estados[key]}}</a></td>
+            <td>{{value}}</td>
+            </td>
+        {% endfor %}
+        </table>
+    </div>
 </body>
 </html>
