@@ -8,7 +8,7 @@ import operator
 
 DATABASE = 'flairs.db'
 
-siglas_estados = {'AC':u'Acre', 'AL':u'Alagoas', 'AM':u'Amazonas', 'AP':u'Amapá','BA':u'Bahia','CE':u'Ceará','DF':u'Distrito Federal','ES':u'Espírito Santo','GO':u'Goiás','MA':u'Maranhão','MT':u'Mato Grosso','MS':u'Mato Grosso do Sul','MG':u'Minas Gerais','PA':u'Pará','PB':u'Paraíba','PR':u'Paraná','PE':u'Pernambuco','PI':u'Piauí','RJ':u'Rio de Janeiro','RN':u'Rio Grande do Norte','RO':u'Rondônia','RS':u'Rio Grande do Sul','RR':u'Roraima','SC':u'Santa Catarina','SE':u'Sergipe','SP':u'São Paulo','TO':u'Tocantins','world':u'País Estrangeiro'}
+siglas_estados = {'AC':u'Acre', 'AL':u'Alagoas', 'AM':u'Amazonas', 'AP':u'Amapá','BA':u'Bahia','CE':u'Ceará','DF':u'Distrito Federal','ES':u'Espírito Santo','GO':u'Goiás','MA':u'Maranhão','MT':u'Mato Grosso','MS':u'Mato Grosso do Sul','MG':u'Minas Gerais','PA':u'Pará','PB':u'Paraíba','PR':u'Paraná','PE':u'Pernambuco','PI':u'Piauí','RJ':u'Rio de Janeiro','RN':u'Rio Grande do Norte','RO':u'Rondônia','RS':u'Rio Grande do Sul','RR':u'Roraima','SC':u'Santa Catarina','SE':u'Sergipe','SP':u'São Paulo','TO':u'Tocantins','world':u'Outros Países'}
 app = Flask(__name__)
 
 def connect_db():

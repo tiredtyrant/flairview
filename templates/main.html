@@ -3,6 +3,13 @@
 <head>
     <title>Flairs do /r/brasil</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}" media="screen" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load('visualization', '1.0', {'packages':['corechart','geochart']});
@@ -19,9 +26,12 @@
             {% endfor %}
         ]);
         var pieoptions = {
-            'title':'Usuários do /r/brasil',
-            'width':600,
-            'height':600
+            title:'Usuários do /r/brasil',
+            width:640,
+            height:480,
+            colors:['#1b85b8','#1E3561','#5a5255','#4366BD','#559e83','#B06CB3','#ae5a41','#c3cb71','#E96BA3'],
+            backgroundColor: {fill:'transparent'},
+            pieHole: 0.5
         };
                        
         //MAP
@@ -39,9 +49,9 @@
             resolution: 'provinces',
             width: 640,
             height: 480,
-            backgroundColor: '#ffffff',
-            datalessRegionColor: '#ffffff',
-            colorAxis: {colors: ['#e0f3db', '#a8ddb5', '#43a2ca']}
+            backgroundColor: {fill:'transparent'},
+            datalessRegionColor: '#BDE0EB',
+            colorAxis: {colors: ['#8493CA', '#82CA9D', '#F7977A']}
         };
         
         var piechart = new google.visualization.PieChart(document.getElementById('chart_div'));
@@ -58,23 +68,38 @@
     </script>
 </head>
 <body>
-    <h1>Localização dos usuários do /r/brasil</h1>
-    <div id="chart_div"></div>
-    <div id="geochart_div"></div>
-    <p>Total de usuários com flair: {{ numtotal }}</p>
-    <div>
-        <table>
-            <tr>
-                <th>Estado</th>
-                <th>Usuários</th>
-            </tr>
-        {% for key, value in uf_list %}
-            <tr>
-            <td><a href="/{{key}}">{{siglas_estados[key]}}</a></td>
-            <td>{{value}}</td>
-            </td>
-        {% endfor %}
-        </table>
+    <div class="row">
+        <h1 class="col-md-12 text-center">Localização dos usuários do /r/brasil</h1>
+    </div>
+    <div class="row" id="graphics">
+        <div class="col-md-1"></div>
+        <div class="col-md-5" id="geochart_div"></div>
+        <div class="col-md-5" id="chart_div"></div>
+        <div class="col-md-1"></div>
+    </div>
+    <div class="row">
+        <h3 class="col-md-12 text-center">Total de usuários com flair: {{ numtotal }}</h3>
+    </div>
+    <div class="row">
+        <p class="col-md-12 text-center">Última atualização: dd/mm/yy</p>
+    </div>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <table class="table table-striped table-condensed">
+                <tr>
+                    <th>Estado</th>
+                    <th>Usuários</th>
+                </tr>
+            {% for key, value in uf_list %}
+                <tr>
+                <td><a href="/{{key}}">{{siglas_estados[key]}}</a></td>
+                <td>{{value}}</td>
+                </td>
+            {% endfor %}
+            </table>
+        </div>
+        <div class="col-md-4"></div>
     </div>
 </body>
 </html>
