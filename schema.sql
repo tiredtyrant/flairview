@@ -4,3 +4,8 @@ CREATE TABLE flairs (
     uf text,
     cidade text
     );
+
+CREATE TABLE lastupdate (
+    id integer,
+    lastdatetime text
+);
