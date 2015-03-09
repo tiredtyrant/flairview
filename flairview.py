@@ -5,6 +5,8 @@ from flask import render_template
 from flask import g
 import sqlite3
 import operator
+from werkzeug.contrib.cache import SimpleCache
+cache = SimpleCache()
 
 DATABASE = 'flairs.db'
 
@@ -22,7 +24,7 @@ def before_request():
 def teardown_request(exception):
     if hasattr(g,'db'):
         g.db.close()
-		
+
 @app.route('/<uf>')
 def showuf(uf):
     userlist = []
@@ -38,20 +40,24 @@ def showuf(uf):
 def mainpage():
     uflist = {}
 
-    #total de usuarios com flair
-    numtotal = g.db.execute('select count(*) from flairs;').fetchone()[0]
+    cachedpage = cache.get('page')
 
-    cur = g.db.execute('select distinct uf from flairs;')
-    ufs = cur.fetchall()
+    if cachedpage is None:
+        #total de usuarios com flair
+        numtotal = g.db.execute('select count(*) from flairs;').fetchone()[0]
+        cur = g.db.execute('select distinct uf from flairs;')
+        ufs = cur.fetchall()
+        cur = g.db.execute('select lastdatetime from lastupdate where id == 1;')
+        lastupdate = cur.fetchone()[0]
 
-    cur = g.db.execute('select lastdatetime from lastupdate where id == 1;')
-    lastupdate = cur.fetchone()[0]
+        for uf in ufs:
+            uflist[uf[0]] = g.db.execute('select count(*) from flairs where uf == ?',[uf[0]]).fetchone()[0]
+        def getKey(item):
+            return item[1]
+        cachedpage = render_template('main.html', siglas_estados=siglas_estados, uf_list = sorted(uflist.items(),key=getKey,reverse=True), numtotal=numtotal, lastupdate=lastupdate)
+        cache.set('page',cachedpage,timeout=60*5)
 
-    for uf in ufs:
-        uflist[uf[0]] = g.db.execute('select count(*) from flairs where uf == ?',[uf[0]]).fetchone()[0]
-    def getKey(item):
-        return item[1]
-    return render_template('main.html', siglas_estados=siglas_estados, uf_list = sorted(uflist.items(),key=getKey,reverse=True), numtotal=numtotal, lastupdate=lastupdate)
+    return cachedpage
     
 if __name__ == '__main__':
     app.run(debug=True)
